@@ -1,0 +1,38 @@
+<html>
+
+<head>
+    <title>Dynamic Chat App</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div class="main">
+        <h3>Enter your login credentials</h3>
+        <form action="" method="POST">
+            <label for="first">
+                Email:
+            </label>
+            <input type="text" id="first" name="email" placeholder="Enter your Email" required>
+
+            <label for="password">
+                Password:
+            </label>
+            <input type="password" id="password" name="password" placeholder="Enter your Password" required>
+
+            <div class="wrap">
+                <button type="submit" value="Login">
+                    Submit
+                </button>
+            </div>
+        </form>
+
+        <% if(typeof message!='undefined' ){ %>
+            <h4 style="color:red">
+                <%= message %>
+            </h4>
+            <% } %>
+
+    </div>
+</body>
+
+</html>

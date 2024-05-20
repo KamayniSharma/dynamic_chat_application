@@ -31,7 +31,63 @@ const registerLoad = async (req, res) => {
     }
 }
 
+const loadLogin = async (req, res) => {
+    try {
+        res.render('login');
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const login = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        const existUser = await user.findOne({ email: email });
+
+        if (existUser) {
+            const passworrdMatch = await bcrypt.compare(password, existUser.password);
+            if (passworrdMatch) {
+                req.session.user = existUser;
+                res.redirect('/dashboard');
+            } else {
+                res.render('login', { message: 'Email or Password is incorrect' })
+            }
+        } else {
+            res.render('login', { message: 'Email or Password is incorrect' });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+const logout = async (req, res) => {
+    try {
+
+        req.session.destroy();
+        res.redirect('/login');
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+
+const loadDashboard = async (req, res) => {
+    try {
+// console.log(req.session);
+        res.render('dashboard', { user: req.session.user })
+
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 module.exports = {
     register,
-    registerLoad
+    registerLoad,
+    loadLogin,
+    login,
+    logout,
+    loadDashboard
 }

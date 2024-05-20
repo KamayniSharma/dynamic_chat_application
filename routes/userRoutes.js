@@ -7,6 +7,7 @@ const path = require('path');
 const multer = require('multer');
 
 const usercontroller = require('../controllers/userController');
+const auth = require('../middlewares/auth');
 
 
 const storage = multer.diskStorage({
@@ -19,11 +20,21 @@ const storage = multer.diskStorage({
     }
 })
 
-const upload = multer({  storage:storage });
+const upload = multer({ storage: storage });
 
 
-router.get('/register', usercontroller.registerLoad);
+router.get('/register', auth.isLogout, usercontroller.registerLoad);
 router.post('/register', upload.single('image'), usercontroller.register);
+
+router.get('/login', auth.isLogout, usercontroller.loadLogin);
+router.post('/login', usercontroller.login);
+router.get('/logout', auth.isLogin, usercontroller.logout);
+
+// router.get('*', (req, res) => {
+//     res.redirect('/');
+// })
+
+router.get('/dashboard', auth.isLogin, usercontroller.loadDashboard);
 
 
 module.exports = router;
