@@ -6,6 +6,7 @@ const session = require('express-session');
 var mongoose = require('mongoose');
 const path = require('path');
 const User = require('./models/userModel');
+const Chat = require('./models/chatModel');
 
 const { SESSION_SECRET } = process.env;
 
@@ -49,9 +50,33 @@ usp.on('connection', async (socket) => {
 
     await User.findByIdAndUpdate({ _id: userId }, { $set: { isOnline: '1' } });
 
+    //broadcasting user online status
+    socket.broadcast.emit('getOnlineUser', { user_id: userId });
+
+
     socket.on('disconnect', async () => {
         console.log('User disconnected');
         await User.findByIdAndUpdate({ _id: userId }, { $set: { isOnline: '0' } });
 
-    })
+        //broadcasting user offline status
+        socket.broadcast.emit('getOfflineUser', { user_id: userId });
+    });
+
+    //show user's chat
+    socket.on('newChat', (data) => {
+        socket.broadcast.emit('loadNewChat', data);
+    });
+
+    //load old chats
+    socket.on('existingChat', async (data) => {
+        var chats = await Chat.find({
+            $or: [{ sender_id: data.sender_id, receiver_id: data.receiver_id },
+            { sender_id: data.receiver_id, receiver_id: data.sender_id }
+            ]
+        });
+
+        socket.emit('loadChats', { chats: chats });
+    });
+
+
 });

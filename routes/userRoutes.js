@@ -35,6 +35,7 @@ router.get('/logout', auth.isLogin, usercontroller.logout);
 // })
 
 router.get('/dashboard', auth.isLogin, usercontroller.loadDashboard);
+router.post('/save-chat', usercontroller.saveChat);
 
 
 module.exports = router;
