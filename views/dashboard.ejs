@@ -1,3 +1,50 @@
-<h1>Hi <%= user.name %></h1>
+<%- include('layouts/header.ejs') %>
 
-<a href="/logout">Logout</a>
+    <h2 class="mb-4"> Hii <%= user.name %>
+    </h2>
+
+    <div class="row">
+        <div class="col-md-3">
+            <ul class="list-group">
+                <% if(users.length> 0){
+                    for( let i=0; i < users.length; i++){ %>
+                        <li class="list-group-item list-group-item-dark cursor-pointer user-list">
+                            <img src="<%= users[i]['image'] %>" alt="" width="50px" height="50px">
+                            <%= users[i]['name'] %>
+                        </li>
+                        <% } } %>
+            </ul>
+        </div>
+        <div class="col-md-9">
+            <h3 class="start-head">Click to start the chat</h3>
+            <div class="chat-section">
+                <div id="chat-container">
+                </div>
+                <form action="" id="chat-form">
+                    <input type="text" name="message" placeholder="Type your message" id="message" class="border"
+                        required>
+                    <input type="submit" value="Send message" class="btn btn-primary">
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const sender_id = '<%= user._id %>'
+        const socket = io('/user-namespace', {
+            auth:{
+                token: '<%= user._id %>'
+            }
+        });
+
+        $(document).ready(function () {
+
+            $('.user-list').click(() => {
+                $('.start-head').hide();
+                $('.chat-section').show();
+            });
+
+        })
+    </script>
+
+    <%- include('layouts/footer.ejs') %>

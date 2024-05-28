@@ -43,7 +43,7 @@ input[type="file"] {
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #5c5099;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -53,10 +53,10 @@ button {
 }
 
 button:hover {
-    background-color: #45a049;
+    background-color: #2a1869;
 }
 
 p {
-    color: #138b13;
+    color: #3e249b;
     margin-top: 15px;
 }
