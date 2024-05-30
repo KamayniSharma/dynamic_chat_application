@@ -78,5 +78,15 @@ usp.on('connection', async (socket) => {
         socket.emit('loadChats', { chats: chats });
     });
 
+    socket.on('chatDeleted', (id) => {
+        socket.broadcast.emit('chatMessageDeleted', id);
+    })
+
+
+    //update chats
+    socket.on('chatUpdated', (data) => {
+        socket.broadcast.emit('chatMessageUpdated', data)
+    })
+
 
 });

@@ -50,7 +50,7 @@ const login = async (req, res) => {
             const passworrdMatch = await bcrypt.compare(password, existUser.password);
             if (passworrdMatch) {
                 req.session.user = existUser;
-                console.log("@@@@",req.session.user);
+                console.log("@@@@", req.session.user);
                 res.redirect('/dashboard');
             } else {
                 res.render('login', { message: 'Email or Password is incorrect' })
@@ -103,6 +103,31 @@ const saveChat = async (req, res) => {
     }
 }
 
+const deleteChat = async (req, res) => {
+    try {
+
+        await Chat.deleteOne({ _id: req.body.id });
+        res.status(200).send({ success: true });
+
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+}
+
+const updateChat = async (req, res) => {
+    try {
+
+        await Chat.findByIdAndUpdate({ _id: req.body.id}, {
+            $set: { message: req.body.message }
+        });
+        res.status(200).send({ success: true });
+        
+
+    } catch (error) {
+        res.status(400).send({ success: false, msg: error.message });
+    }
+}
+
 module.exports = {
     register,
     registerLoad,
@@ -110,5 +135,7 @@ module.exports = {
     login,
     logout,
     loadDashboard,
-    saveChat
+    saveChat,
+    deleteChat,
+    updateChat
 }
