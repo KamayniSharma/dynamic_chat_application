@@ -1,5 +1,6 @@
 require('dotenv').config();
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser');
 const express = require('express');
 const app = express();
 const session = require('express-session');
@@ -21,6 +22,8 @@ app.use(session({ secret: SESSION_SECRET }))
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+app.use(cookieParser());
+
 app.use(express.static('public'));
 
 app.set('views', path.join(__dirname, './views'))
@@ -35,8 +38,8 @@ app.use('/', userRoute)
 //_______CONNECT TO SERVER___________
 const http = require('http').Server(app);
 
-http.listen(3000, () => {
-    console.log("Server is running on port 3000");
+http.listen(3001, () => {
+    console.log("Server is running on port 3001");
 });
 
 const io = require('socket.io')(http);

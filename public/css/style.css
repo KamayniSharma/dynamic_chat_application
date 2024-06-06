@@ -12049,3 +12049,11 @@ a[data-toggle="collapse"] {
 .fa-edit {
   color: var(--blue);
 }
+.addMemberTable{
+  overflow-y: scroll;
+  height: 100px;
+  width: 100%;
+}
+#add-member-error{
+  color: red;
+}

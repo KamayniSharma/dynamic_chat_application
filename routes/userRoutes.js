@@ -30,14 +30,22 @@ router.get('/login', auth.isLogout, usercontroller.loadLogin);
 router.post('/login', usercontroller.login);
 router.get('/logout', auth.isLogin, usercontroller.logout);
 
-// router.get('*', (req, res) => {
-//     res.redirect('/');
-// })
 
 router.get('/dashboard', auth.isLogin, usercontroller.loadDashboard);
 router.post('/save-chat', usercontroller.saveChat);
 router.post('/delete-chat', usercontroller.deleteChat);
 router.post('/update-chat', usercontroller.updateChat);
+
+router.get('/groups', auth.isLogin, usercontroller.loadGroups);
+router.post('/groups', upload.single('image'), usercontroller.createGroup);
+
+router.post('/get-members', auth.isLogin, usercontroller.getMembers);
+router.post('/add-members', auth.isLogin, usercontroller.addMembers);
+
+
+router.get('*', (req, res) => {
+    res.redirect('/');
+});
 
 
 module.exports = router;
