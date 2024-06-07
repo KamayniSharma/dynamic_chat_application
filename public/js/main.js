@@ -201,8 +201,8 @@ socket.on('chatMessageUpdated', (data) => {
 
 });
 
-//add member
-$j('.addMember').click(() => {
+//get member
+$j('.addMember').click(function () {
 	var id = $j(this).attr('data-id');
 	var limit = $j(this).attr('data-limit');
 
@@ -221,11 +221,12 @@ $j('.addMember').click(() => {
 				for (let i = 0; i < users.length; i++) {
 					html += `
 					<tr>
-					<td>
-					<input type="checkbox" name="members[]" value="`+ users[i]['_id'] + `">
-					</td>
-					<td>`+ users[i]['name'] + `</td>
-					</tr>
+                        <td>
+                            <input type="checkbox" name="members[]" value="${users[i]['_id']}">
+                            <input type="hidden" name="member_names[]" value="${users[i]['name']}">
+                        </td>
+                        <td>${users[i]['name']}</td>
+                    </tr>
 					`
 				}
 				$j('.addMembersInTable').html(html);
@@ -238,11 +239,11 @@ $j('.addMember').click(() => {
 
 //add-member-form
 
-$j('#add-member-form').submit((event) => {
+$j('#add-member-form').submit(function(event){
 	event.preventDefault();
 
 	var formData = $j(this).serialize();
-	console.log("formdata",formData);
+	console.log("formdata", formData);
 
 	$j.ajax({
 		url: "/add-members",
@@ -257,7 +258,7 @@ $j('#add-member-form').submit((event) => {
 				$j('#add-member-error').text(res.msg);
 				setTimeout(() => {
 					$j('#add-member-error').text('');
-				},3000)
+				}, 3000)
 			}
 		}
 	})

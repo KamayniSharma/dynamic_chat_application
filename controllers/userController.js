@@ -145,7 +145,7 @@ const loadGroups = async (req, res) => {
 
 const createGroup = async (req, res) => {
     try {
-console.log("groupbpdy",req.body);
+        // console.log("groupbpdy", req.body);
         const group = new Group({
             creator_id: req.session.user._id,
             name: req.body.name,
@@ -177,24 +177,24 @@ const getMembers = async (req, res) => {
 
 const addMembers = async (req, res) => {
     try {
-        console.log("members",req.body.members);
+        // console.log("members",req.body.members);
         if (!(req.body.members) || req.body.members.length == 0) {
             res.status(200).send({ success: false, msg: "Please select any one member" });
         } else if (req.body.members.length > parseInt(req.body.limit)) {
             res.status(200).send({ success: false, msg: `You cannot select more than ${req.body.limit} members` });
         } else {
-            // await Member.deleteMany({ group_id: req.body.group_id });
+            await Member.deleteMany({ group_id: req.body.group_id });
 
-            // var data = [];
-            // const members = req.body.members;
-            // for (let i = 0; i < members.length; i++) {
-            //     data.push({
-            //         group_id: req.body.group_id,
-            //         user_id: members[i]
-            //     });
-            // }
+            var data = [];
+            const members = req.body.members;
+            for (let i = 0; i < members.length; i++) {
+                data.push({
+                    group_id: req.body.group_id,
+                    user_id: members[i]
+                });
+            }
 
-            // await Member.insertMany(data);
+            await Member.insertMany(data);
 
             res.status(200).send({ success: true, msg: "Members added successfully" });
 
