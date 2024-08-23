@@ -219,10 +219,13 @@ $j('.addMember').click(function () {
 				let html = '';
 
 				for (let i = 0; i < users.length; i++) {
+
+					let isMemberOfGroup = users[i]['member'].length > 0 ? true : false;
+
 					html += `
 					<tr>
                         <td>
-                            <input type="checkbox" name="members[]" value="${users[i]['_id']}">
+                            <input type="checkbox" `+ (isMemberOfGroup ? 'checked' : '') + ` name="members[]" value="${users[i]['_id']}">
                             <input type="hidden" name="member_names[]" value="${users[i]['name']}">
                         </td>
                         <td>${users[i]['name']}</td>
@@ -239,7 +242,7 @@ $j('.addMember').click(function () {
 
 //add-member-form
 
-$j('#add-member-form').submit(function(event){
+$j('#add-member-form').submit(function (event) {
 	event.preventDefault();
 
 	var formData = $j(this).serialize();
@@ -251,8 +254,8 @@ $j('#add-member-form').submit(function(event){
 		data: formData,
 		success: function (res) {
 			if (res.success) {
-				// $j('#memberModal').modal('hide');
-				// $j('#add-member-form')[0].reset();
+				$j('#memberModal').modal('hide');
+				$j('#add-member-form')[0].reset();
 				alert(res.msg);
 			} else {
 				$j('#add-member-error').text(res.msg);
@@ -262,4 +265,63 @@ $j('#add-member-form').submit(function(event){
 			}
 		}
 	})
-})
+});
+
+
+
+//update-group
+$j('.updateMember').click(function () {
+	var obj = JSON.parse($j(this).attr('data-obj'));
+
+
+	$j('#update_group_id').val(obj._id)
+	$j('#last_limit').val(obj.limit)
+	$j('#group_name').val(obj.name)
+	$j('#group_limit').val(obj.limit)
+});
+
+
+$j('#updateChatGroupForm').submit(function (event) {
+	event.preventDefault();
+
+	$j.ajax({
+		url: '/update-chat-group',
+		type: 'POST',
+		data: new FormData(this),
+		contentType: false,
+		cache: false,
+		processData: false,
+		success: function (res) {
+			alert(res.msg);
+			if (res.success) {
+				location.reload()
+				$j('#updateGroupModal').modal('hide');
+				$j('#updateChatGroupForm')[0].reset();
+
+			} else {
+				alert(res.msg);
+			}
+		}
+	});
+});
+
+
+// copy shareable link
+$j('.copy').click(function () {
+	$j(this).prepend('<span class="copied_text">Copied</span>');
+	var group_id = $j(this).attr('data-id');
+
+	var url = window.location.host + '/share-group/' + group_id;
+
+	var temp = $j("<input>");
+	$j("body").append(temp);
+	temp.val(url).select();
+	document.execCommand("copy");
+
+	temp.remove();
+
+	setTimeout(() => {
+		$j('.copied_text').remove();
+	}, 2000)
+});
+

@@ -46,50 +46,56 @@ const io = require('socket.io')(http);
 
 const usp = io.of('/user-namespace');
 
-usp.on('connection', async (socket) => {
-    console.log('User connected');
-
-    const userId = socket.handshake.auth.token;
-
-    await User.findByIdAndUpdate({ _id: userId }, { $set: { isOnline: '1' } });
-
-    //broadcasting user online status
-    socket.broadcast.emit('getOnlineUser', { user_id: userId });
-
-
-    socket.on('disconnect', async () => {
-        console.log('User disconnected');
-        await User.findByIdAndUpdate({ _id: userId }, { $set: { isOnline: '0' } });
-
-        //broadcasting user offline status
-        socket.broadcast.emit('getOfflineUser', { user_id: userId });
+io.on('connection', async (socket) => {
+    socket.on('login', async (data) => {
+        console.log(data);
+        socket.join(data.room);
+        socket.to(data.room).emit("notification", { msg: `${data.name} has joined` });  //Emit to everyone in the room except the sender
+        io.to(data.room).emit('users', { msg: "Another user joined" }) // Emit to everyone in the room including the sender
     });
+    // console.log('User connected');
 
-    //show user's chat
-    socket.on('newChat', (data) => {
-        socket.broadcast.emit('loadNewChat', data);
-    });
+    // const userId = socket.handshake.auth.token;
 
-    //load old chats
-    socket.on('existingChat', async (data) => {
-        var chats = await Chat.find({
-            $or: [{ sender_id: data.sender_id, receiver_id: data.receiver_id },
-            { sender_id: data.receiver_id, receiver_id: data.sender_id }
-            ]
-        });
+    // await User.findByIdAndUpdate({ _id: userId }, { $set: { isOnline: '1' } });
 
-        socket.emit('loadChats', { chats: chats });
-    });
-
-    socket.on('chatDeleted', (id) => {
-        socket.broadcast.emit('chatMessageDeleted', id);
-    })
+    // //broadcasting user online status
+    // socket.broadcast.emit('getOnlineUser', { user_id: userId });
 
 
-    //update chats
-    socket.on('chatUpdated', (data) => {
-        socket.broadcast.emit('chatMessageUpdated', data)
-    })
+    // socket.on('disconnect', async () => {
+    //     console.log('User disconnected');
+    //     await User.findByIdAndUpdate({ _id: userId }, { $set: { isOnline: '0' } });
+
+    //     //broadcasting user offline status
+    //     socket.broadcast.emit('getOfflineUser', { user_id: userId });
+    // });
+
+    // //show user's chat
+    // socket.on('newChat', (data) => {
+    //     socket.broadcast.emit('loadNewChat', data);
+    // });
+
+    // //load old chats
+    // socket.on('existingChat', async (data) => {
+    //     var chats = await Chat.find({
+    //         $or: [{ sender_id: data.sender_id, receiver_id: data.receiver_id },
+    //         { sender_id: data.receiver_id, receiver_id: data.sender_id }
+    //         ]
+    //     });
+
+    //     socket.emit('loadChats', { chats: chats });
+    // });
+
+    // socket.on('chatDeleted', (id) => {
+    //     socket.broadcast.emit('chatMessageDeleted', id);
+    // })
+
+
+    // //update chats
+    // socket.on('chatUpdated', (data) => {
+    //     socket.broadcast.emit('chatMessageUpdated', data)
+    // })
 
 
 });

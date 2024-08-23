@@ -42,6 +42,9 @@ router.post('/groups', upload.single('image'), usercontroller.createGroup);
 router.post('/get-members', auth.isLogin, usercontroller.getMembers);
 router.post('/add-members', auth.isLogin, usercontroller.addMembers);
 
+router.post('/update-chat-group', upload.single('image'), usercontroller.updateChatGroup);
+
+
 
 router.get('*', (req, res) => {
     res.redirect('/');
